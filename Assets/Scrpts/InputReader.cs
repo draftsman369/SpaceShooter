@@ -1,16 +1,33 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputReader : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    InputActionAsset InputActions;
+
+    InputAction moveAction;
+
+    private Vector2 moveInput;
+
+    private void OnEnable()
     {
-        
+        InputActions.FindActionMap("Player").Enable();
+
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        InputActions.FindActionMap("Player").Disable();
+    }
+
+    private void Awake()
+    {
+        moveAction = InputSystem.actions.FindAction("Move");
+    }
+
+    private void Update()
+    {
+        moveInput = moveAction.ReadValue<Vector2>();
     }
 }
