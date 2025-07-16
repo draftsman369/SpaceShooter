@@ -4,11 +4,13 @@ using UnityEngine.InputSystem;
 public class InputReader : MonoBehaviour
 {
 
-    InputActionAsset InputActions;
+    public static InputReader Instance { get; private set; }
+    public InputActionAsset InputActions;
 
     InputAction moveAction;
 
     private Vector2 moveInput;
+    public Vector2 MoveInput => moveInput;
 
     private void OnEnable()
     {
@@ -23,7 +25,24 @@ public class InputReader : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            //DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         moveAction = InputSystem.actions.FindAction("Move");
+
+        moveAction.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        moveAction.canceled += ctx => moveInput = Vector2.zero;
+
+
+
     }
 
     private void Update()
